@@ -8,6 +8,7 @@
 #include <xtensor/xrandom.hpp> // xt::random::rand() 
 #include <xtensor-blas/xlinalg.hpp>  // xt::linalg::dot for dot operation
 #include <xtensor/xmanipulation.hpp> // for xt::transpose matrix
+#include <xtensor/xtensor_forward.hpp> // xt::xtensor_fixed
 #include <vector>
 
 using namespace std;
@@ -134,10 +135,26 @@ int main()
 		cout << "\nShape new_mat1: " << xt::adapt(shape_mat1) << ", shape new_mat2: " << xt::adapt(shape_mat2) << endl;
         // dot operation
 		kq = xt::linalg::dot(new_mat1, new_mat2);
-		// cout << "\nnet_mat1 dot new_mat2: \n" << kq << endl;
+		cout << "\nnet_mat1 dot new_mat2: \n" << kq << endl;
 
 		kq = new_mat2 + 5;
 		cout << "\nnew_mat2 + 5: \n" << kq << endl;
     }
+	// xtensor is multidimensional array whose dims are fixed at
+	// compilation time.
+	{
+		array<size_t, 3> shape1 = { 3, 2, 4 };
+		xt::xtensor<double, 3, xt::layout_type::row_major > ten_1 = xt::random::rand<double>(shape1);
+		cout << "\ntensor shape 3, 2, 4 with random numbers init: \n" << ten_1 << endl;
+
+		cout << "\nCheck ten_1 shape: " << xt::adapt(ten_1.shape()) << endl;
+		cout << "\nCheck ten_1 dimension: " << ten_1.dimension() << endl;
+
+		// xtensor_fixed type is multidim array with dim shape fixed
+		// at compile time
+		xt::xtensor_fixed<double, xt::xshape<3, 2, 4>> ten_2;
+		cout << "\ntensor_fixed shape 3, 2, 4: \n" << ten_2 << endl;
+		auto ten_2_shape = ten_2.shape();
+	}
     return 0;
 };
